@@ -87,7 +87,7 @@ impl<'a, T: BrokerConnection + Clone + Debug> ClusterMetadata<T> {
         Some(leader.node_id)
     }
 
-    #[instrument(name = "metadata-sync")]
+    #[instrument(name = "metadata-sync", level = "debug")]
     pub async fn sync(&mut self) -> Result<()> {
         tracing::debug!("Syncing metadata");
         // let mut set = JoinSet::new();
@@ -187,10 +187,7 @@ impl<'a, T: BrokerConnection + Clone + Debug> ClusterMetadata<T> {
                 // Do we have this topic already?
                 if let Some(existing_partitions) = broker_ownership.get_mut(&new_topic_name) {
                     // Don't push the partition on more than once
-                    if !existing_partitions
-                        .iter()
-                        .any(|existing_partition| *existing_partition == *new_partition)
-                    {
+                    if !existing_partitions.contains(new_partition) {
                         existing_partitions.push(*new_partition);
                     }
                 } else {
