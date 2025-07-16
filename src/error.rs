@@ -18,6 +18,8 @@ pub enum Error {
     ArgError(String),
     /// An error in the network.
     IoError(io::ErrorKind),
+    /// An error while decompressing.
+    DecompressError(String),
     /// Error code provided by the kafka broker.
     KafkaError(KafkaCode),
     /// Could not decode bytes into valid UTF-8
@@ -36,7 +38,7 @@ pub enum Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{:?}", self)
+        write!(f, "{self:?}")
     }
 }
 
